@@ -16,9 +16,10 @@ public class ImageLabel extends JLabel implements ActionListener{
 	BufferedImage img;
 	ImageLabel(){
 		this.setPreferredSize(new Dimension(512,512));
+		
 	}
 	ImageLabel(BufferedImage ig){
-		this.setBorder(BorderFactory.createLineBorder(Color.green));
+		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		changeImage(ig);
 	}
 	public void changeImage(BufferedImage ig) {

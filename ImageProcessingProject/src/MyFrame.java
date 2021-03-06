@@ -9,7 +9,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,6 +25,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+
+
 
 
 
@@ -40,6 +44,10 @@ public class MyFrame extends JFrame implements ActionListener{
 	JPanel leftPanel;
 	JPanel rightPanel;
 	BufferedImage defaultImg;
+	BufferedImage grayImage;
+	BufferedImage ditheredImage;
+	BufferedImage dynamicImage;
+	TIFFimage tifImage;
 	File file=null;
 	int frameW = 720;
 	int frameH = 720;
@@ -47,18 +55,19 @@ public class MyFrame extends JFrame implements ActionListener{
 	int WHEIGHT = (int)screenSize.getHeight()/2;
 	JButton processButton;
 	JPanel bottomPanel;
-	MyFrame(){
+	MyFrame() throws Exception{
 		processButton = new JButton("Process");
 		bottomPanel = new JPanel();
 		bottomPanel.add(processButton);
 		processButton.addActionListener(this);
+		processButton.setEnabled(false);
 		//application icons
 		appIcon = new ImageIcon("icons/imageIconS.png").getImage();
 		fileIcon = new ImageIcon("icons/folderSmall.png");
 		
 		//frame settings
 		this.setTitle("Image Processor");
-		//this.setResizable(false);
+		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(WWIDTH-frameW/2,WHEIGHT-frameH/2);
 		this.setLayout(new BorderLayout());
@@ -92,7 +101,11 @@ public class MyFrame extends JFrame implements ActionListener{
 		menu = new JMenuBar();
 		menu.add(fileMenu);
 		//menu.setBackground(Color.LIGHT_GRAY);
+		//defaultImg = readImg("images/balloons.tif");
 		defaultImg = readImg("images/defaultImg.png");
+		
+		
+		
 		imagePanel = new ImagePanel(defaultImg);
 		
 		
@@ -104,14 +117,26 @@ public class MyFrame extends JFrame implements ActionListener{
 	}
 
 	public BufferedImage readImg(String path) {
-		BufferedImage ret=null;
-		try {
-			ret = ImageIO.read(new File(path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(path.endsWith(".tif")) {
+			try {
+				tifImage = new TIFFimage(path);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return tifImage.getImage();
 		}
-		return ret;
+		else {
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(new File(path));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return image;
+		}
+		
 	}
 	
 	
@@ -128,7 +153,7 @@ public class MyFrame extends JFrame implements ActionListener{
 				BufferedImage newImage = null;
 				newImage = readImg(file);
 				imagePanel.openImage(newImage);
-				
+				processButton.setEnabled(true);
 			}
 		}
 		else if(e.getSource() == saveItem) {
@@ -138,6 +163,11 @@ public class MyFrame extends JFrame implements ActionListener{
 			System.exit(0);
 		}
 		else if(e.getSource() == processButton) {
+			grayImage = Func.grayScale(tifImage.getRGB(),tifImage.getWidth(),tifImage.getHeight());
+			imagePanel.changeImg2(grayImage,"Grayscale");
+			//ditheredImage = Func.dithering(grayImage, grayImage.getWidth(), grayImage.getHeight());
+			ditheredImage = Func.dithering(tifImage.getRGB(), tifImage.getWidth(), tifImage.getHeight());
+			imagePanel.changeImg3(ditheredImage,"Ordered dithering");
 			System.out.println("Processing...");
 		}
 		

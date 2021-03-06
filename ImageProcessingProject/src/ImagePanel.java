@@ -34,37 +34,13 @@ public class ImagePanel extends JPanel implements ActionListener{
 	JLabel labelTitle4;
 	JScrollPane scrollFrame;
 	int processed = 0;
-	ImagePanel(){
-//		panel1 = new JPanel();
-//		panel2 = new JPanel();
-//		panel3 = new JPanel();
-//		panel4 = new JPanel();
-//		panel1.setBackground(Color.black);
-//		panel2.setBackground(Color.yellow);
-//		panel3.setBackground(Color.red);
-//		panel4.setBackground(Color.blue);
-//		panel1.setPreferredSize(new Dimension(512,512));
-//		panel2.setPreferredSize(new Dimension(512,512));
-//		panel3.setPreferredSize(new Dimension(512,512));
-//		panel4.setPreferredSize(new Dimension(512,512));
-		
-		scrollPanel = new JPanel();
-		scrollFrame = new JScrollPane(scrollPanel);
-	
-//		scrollPanel.add(panel1);
-//		scrollPanel.add(panel2);
-//		scrollPanel.add(panel3);
-//		scrollPanel.add(panel4);
-//		scrollPanel.setPreferredSize(new Dimension(512,2048));
-//		JScrollPane scrollFrame = new JScrollPane(scrollPanel);
-//		scrollPanel.setAutoscrolls(true);
-//		scrollFrame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//		scrollFrame.setPreferredSize(new Dimension( 512,512));
-//		this.add(scrollFrame);
-		this.add(scrollPanel);
-		this.setBackground(Color.LIGHT_GRAY);
-		this.setLayout(new FlowLayout());
-	}
+//	ImagePanel(){
+//		scrollPanel = new JPanel();
+//		scrollFrame = new JScrollPane(scrollPanel);
+//		this.add(scrollPanel);
+//		this.setBackground(Color.LIGHT_GRAY);
+//		this.setLayout(new FlowLayout());
+//	}
 	
 	ImagePanel(BufferedImage img){
 		scrollPanel = new JPanel();
@@ -73,13 +49,13 @@ public class ImagePanel extends JPanel implements ActionListener{
 		scrollFrame = new JScrollPane(scrollPanel);
 		scrollPanel.setAutoscrolls(true);
 		scrollFrame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		openImage(img);
+		scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollFrame.setPreferredSize(new Dimension(img.getWidth()+20,img.getHeight()+20));
 		this.add(scrollFrame);
 		this.setBackground(Color.LIGHT_GRAY);
 		this.setLayout(new FlowLayout());
-		
-		
+		initUI(img);
+		openImage(img);
 	}
 
 //	public void paintComponent(Graphics g) {
@@ -89,16 +65,11 @@ public class ImagePanel extends JPanel implements ActionListener{
 //		
 //	}
 	public void openImage(BufferedImage image) {
-			if(scrollPanel.getComponentCount() > 0) {
-				resetImages(image);
-			}
-			else {
-				initUI(image);
-			}
+			
+			resetImages(image);
 			Dimension imageSize = new Dimension(image.getWidth(),image.getHeight());
 			setScrollFrameSize(imageSize,scrollFrame);
 			setViewPanelSize(labelTitle1.getSize(),imageSize,scrollPanel);
-			System.out.println("open image:"+image.getHeight());
 	}
 	public void resetImages(BufferedImage image) {
 		imageLabel1.changeImage(image);
@@ -109,6 +80,19 @@ public class ImagePanel extends JPanel implements ActionListener{
 		labelTitle2.setText("Original");
 		labelTitle3.setText("Original");
 		labelTitle4.setText("Original");
+	}
+	
+	public void changeImg2(BufferedImage img, String s) {
+		imageLabel2.changeImage(img);
+		labelTitle2.setText(s);
+	}
+	public void changeImg3(BufferedImage img, String s) {
+		imageLabel3.changeImage(img);
+		labelTitle3.setText(s);
+	}
+	public void changeImg4(BufferedImage img, String s) {
+		imageLabel4.changeImage(img);
+		labelTitle4.setText(s);
 	}
 	
 	public void initUI(BufferedImage image) {
@@ -134,14 +118,13 @@ public class ImagePanel extends JPanel implements ActionListener{
 		scrollPanel.add(labelTitle3);
 		scrollPanel.add(imageLabel4);
 		scrollPanel.add(labelTitle4);
-		
 	}
 	
 	public void setScrollFrameSize(Dimension imageSize, JScrollPane pane) {
 		int paneW, paneH;
-		int barW,barH;
+		int barW;
+		
 		barW = 14;
-		barH = (int) imageSize.getHeight();
 		paneW = (int) (imageSize.getWidth()+pane.getVerticalScrollBar().getWidth());
 		paneH = (int) (imageSize.getHeight()) + 20;
 		pane.getVerticalScrollBar().setPreferredSize(new Dimension(14,paneH));
