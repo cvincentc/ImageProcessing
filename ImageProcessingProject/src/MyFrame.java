@@ -61,8 +61,9 @@ public class MyFrame extends JFrame implements ActionListener{
 		bottomPanel.add(processButton);
 		processButton.addActionListener(this);
 		processButton.setEnabled(false);
+		
 		//application icons
-		appIcon = new ImageIcon("icons/imageIconS.png").getImage();
+		appIcon = new ImageIcon("icons/imageIconS.png").getImage(); 
 		fileIcon = new ImageIcon("icons/folderSmall.png");
 		
 		//frame settings
@@ -101,14 +102,13 @@ public class MyFrame extends JFrame implements ActionListener{
 		menu = new JMenuBar();
 		menu.add(fileMenu);
 		//menu.setBackground(Color.LIGHT_GRAY);
-		//defaultImg = readImg("images/balloons.tif");
+		//defaultImg = readImg("images/lena.tif");
+		//defaultImg = readImg("images/lena.tif");
 		defaultImg = readImg("images/defaultImg.png");
 		
 		
 		
 		imagePanel = new ImagePanel(defaultImg);
-		
-		
 		this.add(imagePanel,BorderLayout.CENTER);
 		this.add(menu,BorderLayout.NORTH);
 		this.add(bottomPanel,BorderLayout.SOUTH);
@@ -117,7 +117,7 @@ public class MyFrame extends JFrame implements ActionListener{
 	}
 
 	public BufferedImage readImg(String path) {
-		if(path.endsWith(".tif")) {
+		if(path.endsWith(".tif") || path.endsWith(".tiff")) {
 			try {
 				tifImage = new TIFFimage(path);
 			} catch (IOException e) {
@@ -146,14 +146,17 @@ public class MyFrame extends JFrame implements ActionListener{
 		if(e.getSource() == openItem) {
 			
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setCurrentDirectory(new File("."));
+			fileChooser.setCurrentDirectory(new File("./images"));
 			int response = fileChooser.showOpenDialog(null);
 			if(response == JFileChooser.APPROVE_OPTION){
 				String file = fileChooser.getSelectedFile().getAbsolutePath();
 				BufferedImage newImage = null;
 				newImage = readImg(file);
-				imagePanel.openImage(newImage);
+				imagePanel.openImage(newImage); 
+				System.out.println("location"+imagePanel.getLocation());
 				processButton.setEnabled(true);
+				
+				
 			}
 		}
 		else if(e.getSource() == saveItem) {
@@ -168,6 +171,13 @@ public class MyFrame extends JFrame implements ActionListener{
 			//ditheredImage = Func.dithering(grayImage, grayImage.getWidth(), grayImage.getHeight());
 			ditheredImage = Func.dithering(tifImage.getRGB(), tifImage.getWidth(), tifImage.getHeight());
 			imagePanel.changeImg3(ditheredImage,"Ordered dithering");
+			
+			
+			dynamicImage = Func.dynamicRange(tifImage.getRGB(), tifImage.getWidth(), tifImage.getHeight(),.15);
+			//dynamicImage = Func.f(Func.dynamicRange(tifImage.getRGB(), tifImage.getWidth(), tifImage.getHeight(),.3), Func.dynamicRange(tifImage.getRGB(), tifImage.getWidth(), tifImage.getHeight(),-.3));
+			
+			imagePanel.changeImg4(dynamicImage,"Dynamic range");
+			
 			System.out.println("Processing...");
 		}
 		

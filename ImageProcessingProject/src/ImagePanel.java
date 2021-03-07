@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,7 +41,7 @@ public class ImagePanel extends JPanel implements ActionListener{
 //		this.add(scrollPanel);
 //		this.setBackground(Color.LIGHT_GRAY);
 //		this.setLayout(new FlowLayout());
-//	}
+//	} 
 	
 	ImagePanel(BufferedImage img){
 		scrollPanel = new JPanel();
@@ -48,12 +49,13 @@ public class ImagePanel extends JPanel implements ActionListener{
 		scrollPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		scrollFrame = new JScrollPane(scrollPanel);
 		scrollPanel.setAutoscrolls(true);
+		scrollPanel.setLayout(new BorderLayout());
 		scrollFrame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollFrame.setPreferredSize(new Dimension(img.getWidth()+20,img.getHeight()+20));
-		this.add(scrollFrame);
 		this.setBackground(Color.LIGHT_GRAY);
-		this.setLayout(new FlowLayout());
+		this.setLayout(new BorderLayout());
+		this.add(scrollFrame);
 		initUI(img);
 		openImage(img);
 	}
@@ -68,8 +70,14 @@ public class ImagePanel extends JPanel implements ActionListener{
 			
 			resetImages(image);
 			Dimension imageSize = new Dimension(image.getWidth(),image.getHeight());
-			setScrollFrameSize(imageSize,scrollFrame);
+			scrollFrame.setAlignmentX(CENTER_ALIGNMENT);
+			this.setAlignmentX(CENTER_ALIGNMENT);
+			
 			setViewPanelSize(labelTitle1.getSize(),imageSize,scrollPanel);
+			setScrollFrameSize(imageSize,scrollFrame);
+			System.out.println(scrollFrame.getSize());
+			scrollFrame.setLocation((this.getWidth()-image.getWidth())/2,(this.getHeight()-image.getHeight())/4);
+
 	}
 	public void resetImages(BufferedImage image) {
 		imageLabel1.changeImage(image);
@@ -101,10 +109,12 @@ public class ImagePanel extends JPanel implements ActionListener{
 		imageLabel2 =  new ImageLabel(image);
 		imageLabel3 =  new ImageLabel(image);
 		imageLabel4 =  new ImageLabel(image);
+		
 		labelTitle1 = new JLabel(s);
-		labelTitle2 = new JLabel(s);
+		labelTitle2 = new JLabel(s); 
 		labelTitle3 = new JLabel(s);
 		labelTitle4 = new JLabel(s);
+		
 		labelTitle1.setForeground(Color.black);
 		labelTitle2.setForeground(Color.black);
 		labelTitle3.setForeground(Color.black);
@@ -123,21 +133,18 @@ public class ImagePanel extends JPanel implements ActionListener{
 	public void setScrollFrameSize(Dimension imageSize, JScrollPane pane) {
 		int paneW, paneH;
 		int barW;
-		
 		barW = 14;
 		paneW = (int) (imageSize.getWidth()+pane.getVerticalScrollBar().getWidth());
-		paneH = (int) (imageSize.getHeight()) + 20;
+		paneH = (int) (imageSize.getHeight()*2) + 20;
 		pane.getVerticalScrollBar().setPreferredSize(new Dimension(14,paneH));
 		pane.setSize(new Dimension(paneW+ barW+4 ,paneH));
-		System.out.println(imageSize);
-		System.out.println(pane.getSize());
 	}
 	public void setViewPanelSize(Dimension labelSize, Dimension imageSize, JPanel panel) {
 		int viewW,viewH;
 		viewW = (int) (imageSize.getWidth());
-		viewH = (int) (imageSize.getHeight()*4 + labelSize.getHeight()*4);
+		viewH = (int) (imageSize.getHeight()*5 + labelSize.getHeight()*4);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		if(labelSize.getHeight()==0) viewH += 4*20;
-		System.out.println("height:"+labelSize.getHeight());
 		panel.setPreferredSize(new Dimension(viewW,viewH));
 	}
 	@Override

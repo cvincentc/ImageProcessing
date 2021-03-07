@@ -110,11 +110,14 @@ public class TIFFimage {
 								else offset = entry[i].getValue();
 							}
 							else if(header.ending =="II")
-								offset = decode4(raw[x+3],raw[x+2],raw[x+1],raw[x]);
+								if(entry[i].isOffset()) {
+									offset = decode4(raw[x+3],raw[x+2],raw[x+1],raw[x]);
+								}
+								else offset = entry[i].getValue();
 							x = x + 4;
 						}
 						stripOffset[j] = offset;
-						//System.out.println(j+": "+stripOffset[j]);
+						System.out.println(j+": "+stripOffset[j]+" "+(x-4));
 					}
 				}
 				else {
@@ -129,6 +132,7 @@ public class TIFFimage {
 					
 					stripByteCount = new int[count];
 					int offset = 0;
+					int sum =0;
 					int type = entry[i].getType();
 					for(int j = 0;j<count;j++) {
 						if(header.ending =="MM") {
@@ -136,7 +140,7 @@ public class TIFFimage {
 								offset = entry[i].getValue();
 							}
 							else if(type == 3) {
-								offset = decode2(raw[x],raw[x+1]);
+								offset = decode2(raw[x],raw[x+1]); 
 								x+=2;
 							}
 							else if(type == 4) {
@@ -156,8 +160,10 @@ public class TIFFimage {
 							}	
 						}
 						stripByteCount[j] = offset;
+						sum+=stripByteCount[j];
+						System.out.println(j+": "+stripByteCount[j]+" "+(x-4));
 					}
-				
+					System.out.println("sum: "+sum);
 				}
 				else {
 //					strupByteCount = new long[1];
