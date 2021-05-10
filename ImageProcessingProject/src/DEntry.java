@@ -1,58 +1,104 @@
 
-
 public class DEntry {
-	int tag;
-	int type;
-	int count;
-	int valueOrOff;
+	private int tag;
+	private int type;
+	private int count;
+	private int valueOrOff[];
 	static String dataType[] = {"","BYTE","ASCII","SHORT","LONG",
 			"RATIONAL","SBYTE","UNDEFINEDED","SSHORT","SLONG",
 			"SRATIONAL","FLOAT","DOUBLE"};
 	static int dataSize[] = {0,1,1,2,4,4,16,1,1,2,4,16,4,8};
 	DEntry(int arr[], int x, String ending){
-		if(ending == "II") {
+		if(ending == "II") { //little ending
 			tag =decode2(arr[x+1],arr[x]);
 			type = decode2(arr[x+3],arr[x+2]);
 			count = decode4(arr[x+7],arr[x+6],arr[x+5],arr[x+4]);
-			valueOrOff = decode4(arr[x+11],arr[x+10],arr[x+9],arr[x+8]);
+			valueOrOff = new int[count];
+			int v = decode4(arr[x+11],arr[x+10],arr[x+9],arr[x+8]);
+			if(isOffset()) {
+				//System.out.println("strip offsets:"+x);
+				for(int j =0;j<count;j++) {
+					if(type == 3) {
+						valueOrOff[j] = decode2(arr[v+1],arr[v]);
+						v = v + 2; 
+					}
+					else if(type == 4) {
+						valueOrOff[j] = decode4(arr[v+3],arr[v+2],arr[v+1],arr[v]);
+						v = v + 4;
+					}
+//					else if(type == 5) {
+//						valueOrOff = new int[2];
+//						if(ending == "MM") {
+//							valueOrOff[]
+//						}
+//					}
+					//System.out.println(j+": "+stripOffset[j]+" "+(x-4));
+				}
+			}
+			else if (type == 5) {
+				valueOrOff = new int[2];
+				valueOrOff[0]= decode4(arr[v+3],arr[v+2],arr[v+1],arr[v]);
+				valueOrOff[1]=decode4(arr[v+7],arr[v+6],arr[v+5],arr[v+4]);
+			}
+			else valueOrOff[0] = v;
 		}
-		else if(ending == "MM") {
+		else if(ending == "MM") {//big ending
 			tag =decode2(arr[x],arr[x+1]);
 			type = decode2(arr[x+2],arr[x+3]);
 			count = decode4(arr[x+4],arr[x+5],arr[x+6],arr[x+7]);
-			if(dataSize[type]*count>4) 
-				valueOrOff = decode4(arr[x+8],arr[x+9],arr[x+10],arr[x+11]);
+			valueOrOff = new int[count];
+			int v = decode4(arr[x+8],arr[x+9],arr[x+10],arr[x+11]);
+			if(isOffset()) {System.out.println("off");
+				for(int j = 0;j<count;j++) {
+					if(type == 3) {
+						valueOrOff[j] = decode2(arr[v],arr[v+1]);
+						v = v + 2;
+					}
+					else if(type == 4) {
+						valueOrOff[j] = decode4(arr[v],arr[v+1],arr[v+2],arr[v+3]);
+						v = v + 4;
+					}
+				}
+			}
+			else if(type == 5) {	
+				valueOrOff = new int[2];
+				valueOrOff[0]= decode4(arr[v],arr[v+1],arr[v+2],arr[v+3]);
+				valueOrOff[1]=decode4(arr[v+4],arr[v+5],arr[v+6],arr[v+7]);
+			}
 			else if(dataSize[type] == 2) {
-				valueOrOff = decode2(arr[x+8],arr[x+9]);
+				System.out.println("2");
+				valueOrOff[0] = decode2(arr[x+8],arr[x+9]);
 			}
-			else if(dataSize[type] == 3) {
-				valueOrOff = decode3(arr[x+8],arr[x+9],arr[x+10]);
+			else if(dataSize[type] == 3) {System.out.println("3");
+				valueOrOff[0] = decode3(arr[x+8],arr[x+9],arr[x+10]);
 			}
-			else if(dataSize[type] == 4) {
-				valueOrOff = decode4(arr[x+8],arr[x+9],arr[x+10],arr[x+11]);
+			else if(dataSize[type] == 4) {System.out.println("4");
+				valueOrOff[0] = decode4(arr[x+8],arr[x+9],arr[x+10],arr[x+11]);
 			}
+			
 		}
-//		System.out.println("Tag:"+tag);
-//		System.out.println("Type:"+type);
-//		System.out.println("count:"+count);
-//		System.out.println("valueOrOff:"+valueOrOff);
-//		System.out.println();
+		//showEntry();
 	}
+	
 	public int getTag() {
 		return tag;
 	}
+	
 	public int getType() {
 		return type;
 	}
+	
 	public int getCount() {
 		return count;
 	}
-	public int getValue() {
-		return valueOrOff;
+	
+	public int getValue(int i) {
+		return valueOrOff[i];
 	}
 	public int getDataSize() {
 		return dataSize[type];
 	}
+	
 	public int decode2(int x,int y) {
 		String s = Integer.toHexString(x);
 		String t = Integer.toHexString(y);
@@ -62,6 +108,7 @@ public class DEntry {
 			s = "0"+s;
 		return Integer.parseInt(s+t,16);
 	}
+	
 	public int decode3(int x,int y, int z) {
 		String s = Integer.toHexString(x);
 		String t = Integer.toHexString(y);
@@ -74,6 +121,7 @@ public class DEntry {
 			v = "0"+v;
 		return Integer.parseInt(s+t+v,16);
 	}
+
 	public int decode4(int w, int x,int y,int z) {
 		String s = Integer.toHexString(w);
 		String t = Integer.toHexString(x);
@@ -89,16 +137,25 @@ public class DEntry {
 		
 		return Integer.parseInt(s,16);
 	}
+	
+	//display entry information
 	public void showEntry() {
 		System.out.println("Tag:" + decodeTag(tag));
 		System.out.println("Type:" + dataType[type]);
 		System.out.println("Count:" + count);
-		System.out.println("Value/Offset:" + valueOrOff);
+		for(int i = 0;i<valueOrOff.length;i++) {
+			System.out.println("["+i+"]: " + valueOrOff[i]);
+		}
 	}
+	
+	//determines if value/offset field is offset or not
 	public Boolean isOffset() {
 		if(count * dataSize[type] >4) return true;
 		else return false;
 	}
+	
+	
+	//decode entry tag
 	public String decodeTag(double x) {
 		if(x==256) return "ImageWidth";
 		else if(x==257) return "ImageLength";
