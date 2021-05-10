@@ -2,8 +2,11 @@
 
 demo video: https://youtu.be/TQoIQjb57Xk
 
-Double click to run the java executable.
-To run the jar file in command line, simpily type in "java -jar p1.jar", no input arguments required.
+To run the executable, please first download Executable.zip.
+
+Then extract the zip file.
+
+Double click to run the java executable, or to run the jar file in command line, simpily type in "java -jar p1.jar", no input arguments required.
 
 The project is inside the "ImageProcessiingProject" directory
 
