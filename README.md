@@ -1,5 +1,7 @@
 # ImageProcessor
 
+##An application that can decode tiff images and generate different visual effects
+
 demo video: https://youtu.be/TQoIQjb57Xk
 
 To run the executable, please first download Executable.zip.
