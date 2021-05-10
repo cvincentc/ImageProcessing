@@ -1,4 +1,4 @@
-# ImageProcessing
+# ImageProcessor
 
 demo video: https://youtu.be/TQoIQjb57Xk
 
