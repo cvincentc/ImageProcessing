@@ -16,3 +16,10 @@
 <p>The project is inside the "ImageProcessiingProject" directory</p>
 
 <h3>note: please put the executable file with "icons" folder and "images" folder in the same directory.</h3>
+
+<h2>Interface:</h2>
+<img src="./results/interface.PNG" alt="lena.tiff">
+<h2>Results:</h2>
+<img src="./results/result1.PNG" alt="process result 1">
+<img src="./results/result2.PNG" alt="process result 2">
+<img src="./results/result3.PNG" alt="process result 3">
