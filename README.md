@@ -1,15 +1,18 @@
-# ImageProcessor
+<h1> ImageProcessor </h1>
 
-##An application that can decode tiff images and generate different visual effects
+<h2> An application that can decode tiff images and generate different visual effects </h2>
 
-demo video: https://youtu.be/TQoIQjb57Xk
+<h2>demo video: https://youtu.be/TQoIQjb57Xk</h2>
 
-To run the executable, please first download Executable.zip.
+<h3>To run the executable</h3> 
+<ol>
+<li>Download Executable.zip.</li>
 
-Then extract the zip file.
+<li>Extract the zip file.</li>
 
-To run the jar file in command line, simpily type in "java -jar processor.jar", no input arguments required. (java installation required.)
+<li> To run the jar file in command line, simpily type in "java -jar processor.jar", no input arguments required. (java installation required.)</li>
+</ol>
 
-The project is inside the "ImageProcessiingProject" directory
+<p>The project is inside the "ImageProcessiingProject" directory</p>
 
-note: please put the executable file with "icons" folder and "images" folder in the same directory.
+<h3>note: please put the executable file with "icons" folder and "images" folder in the same directory.</h3>
